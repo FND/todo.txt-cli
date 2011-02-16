@@ -16,4 +16,4 @@ $TODO_FULL_SH archive
 
 cd "$TODO_DIR"
 git diff && \
-git commit -a -m "$(date +'%Y-%m-%d %H:%M:%S')"
+git commit -a -m "commit done by todo.txt-cli commit"
