@@ -24,9 +24,9 @@ def main(args=None):
 		if match:
 			threshold = [int(i) for i in match.groups()]
 			if datetime(*threshold) < now:
-				print line.strip()
+				print(line.strip())
 		else:
-			print line.strip()
+			print(line.strip())
 	return True
 
 
