@@ -19,5 +19,5 @@ $TODO_FULL_SH archive
 cd "$TODO_DIR"
 git diff
 if [ "$mode" != "-v" ]; then
-	git commit -q -a $mode -m "$HOST: $(date -Iseconds)"
+	git commit -a $mode -m "$(hostname): $(date -Iseconds)"
 fi
