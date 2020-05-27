@@ -3,31 +3,59 @@
 """
 filter incoming lines based on date threshold
 
-hides tasks marked with a date threshold ("t:YYYY-MM-DD") in the future
+hides tasks marked with a date threshold (`t:YYYY-MM-DD`) in the future - an
+optional heads-up period (`h:#`, indicating a number of days) can be added to
+move up the threshold
 
-this is intended to be used as TODOTXT_FINAL_FILTER
+this is intended to be used as `TODOTXT_FINAL_FILTER`
 """
 
 import sys
 import re
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 pattern = re.compile(r"t:(\d{4})-(\d{2})-(\d{2})")
+hpattern = re.compile(r"h:(\d+)")
 
 
-def main(args=None):
+def usage():
+	abort("futureTasks: " + __doc__, 2)
+
+
+def main(args):
+	try:
+		if args[1] == "usage":
+			usage()
+	except IndexError:
+		pass
+
 	now = datetime.now()
 	for line in sys.stdin:
 		match = pattern.search(line)
 		if match:
 			threshold = [int(i) for i in match.groups()]
-			if datetime(*threshold) < now:
-				print(line.strip())
+
+			hmatch = hpattern.search(line)
+			try:
+				headsup = int(hmatch.groups()[0]) if hmatch else 0
+			except ValueError:
+				abort("ERROR: invalid heads-up in «%s»" % line)
+
+			try:
+				if datetime(*threshold) < now + timedelta(days=headsup):
+					print(line.strip())
+			except ValueError:
+				abort("ERROR: invalid threshold in «%s»" % line)
 		else:
 			print(line.strip())
 	return True
+
+
+def abort(msg, status=1):
+	print(msg, file=sys.stderr)
+	sys.exit(status)
 
 
 if __name__ == "__main__":
