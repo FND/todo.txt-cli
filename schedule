@@ -56,7 +56,7 @@ function replace {
 	add $item "$threshold"
 }
 
-[ "$action" = "usage" ] && usage
+[ "$item" = "usage" ] && usage
 
 if [ -z $item ]; then
 	list
